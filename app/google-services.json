@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "64044059397",
+    "firebase_url": "https://mychatapp-bbe33.firebaseio.com",
+    "project_id": "mychatapp-bbe33",
+    "storage_bucket": "mychatapp-bbe33.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:64044059397:android:cce771861eef4c12",
+        "android_client_info": {
+          "package_name": "com.me.priya.mychatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "64044059397-47brjpi4lte5efatdlb66bhvj1ba0rej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.me.priya.mychatapp",
+            "certificate_hash": "a8393ec0ecae46bc68f673f0702b259d30d0460e"
+          }
+        },
+        {
+          "client_id": "64044059397-38o3g0128hk1l9491ibd3qki7rmq9sp1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYmIRejEw-kQNCCz3YF7YI6pMQP2433Ys"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "64044059397-38o3g0128hk1l9491ibd3qki7rmq9sp1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
