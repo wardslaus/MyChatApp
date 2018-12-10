@@ -6,6 +6,7 @@
   android:layout_height="wrap_content"
   android:orientation="vertical"
   tools:context=".MainActivity">
+
   <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -29,10 +30,19 @@
         android:text="User name"
         android:textColor="@android:color/white"/>
     </android.support.v7.widget.Toolbar>
-
+    <android.support.design.widget.TabLayout
+      android:id="@+id/tab_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/colorPrimaryDark"
+      app:tabIndicatorColor="@android:color/white"
+      app:tabSelectedTextColor="@android:color/white"
+      app:tabTextColor="@android:color/white"/>
   </android.support.design.widget.AppBarLayout>
-<TextView
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
-  android:text="eererfre"/>
+
+    <android.support.v4.view.ViewPager
+      android:id="@+id/view_pager"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 </LinearLayout>
