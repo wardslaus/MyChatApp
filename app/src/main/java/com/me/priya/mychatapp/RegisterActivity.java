@@ -72,12 +72,12 @@ public class RegisterActivity extends AppCompatActivity {
               HashMap<String, String> hashMap = new HashMap<>();
               hashMap.put("id", user_id);
               hashMap.put("username", username);
-              hashMap.put("imageURL", "default");
+              hashMap.put("imageUrl", "default");
               reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                   if (task.isSuccessful()) {
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
