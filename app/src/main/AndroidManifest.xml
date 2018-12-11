@@ -27,6 +27,8 @@
       android:name=".LoginActivity"
       android:parentActivityName=".StartActivity">
     </activity>
+    <activity android:name=".MessageActivity">
+    </activity>
   </application>
 
 </manifest>

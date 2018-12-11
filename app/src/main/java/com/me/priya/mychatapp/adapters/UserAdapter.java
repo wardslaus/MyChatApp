@@ -1,13 +1,16 @@
 package com.me.priya.mychatapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.me.priya.mychatapp.MessageActivity;
 import com.me.priya.mychatapp.R;
 import com.me.priya.mychatapp.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -36,13 +39,21 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
   @Override
   public void onBindViewHolder(@NonNull UserAdapter.MyViewHolder myViewHolder, int position) {
-    User user = userList.get(position);
+    final User user = userList.get(position);
     myViewHolder.txt_user_name.setText(user.getUsername());
     if (user.getImageUrl().equals("default")) {
       Glide.with(context).load(R.mipmap.ic_launcher).into(myViewHolder.profile_image);
     } else {
       Glide.with(context).load(user.getImageUrl()).into(myViewHolder.profile_image);
     }
+    myViewHolder.itemView.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(context,MessageActivity.class);
+        intent.putExtra("USER_ID", user.getId());
+        context.startActivity(intent);
+      }
+    });
   }
 
   @Override
