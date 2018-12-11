@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,9 +21,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.me.priya.mychatapp.adapters.MessageAdapter;
+import com.me.priya.mychatapp.model.Chat;
 import com.me.priya.mychatapp.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -34,6 +40,10 @@ public class MessageActivity extends AppCompatActivity {
 
   ImageButton send_btn;
   EditText message_edt;
+
+  MessageAdapter messageAdapter;
+  List<Chat> chats;
+  RecyclerView recyclerView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,13 @@ public class MessageActivity extends AppCompatActivity {
         finish();
       }
     });
+
+    recyclerView = findViewById(R.id.recycler_view);
+    recyclerView.setHasFixedSize(true);
+    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+    linearLayoutManager.setStackFromEnd(true);
+    recyclerView.setLayoutManager(linearLayoutManager);
+
     profileImageView = findViewById(R.id.profile_image);
     txt_username = findViewById(R.id.user_name);
 
@@ -64,9 +81,9 @@ public class MessageActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         String msg = message_edt.getText().toString();
-        if(!msg.equals("")){
-          sendMessage(firebaseUser.getUid(),uId,msg);
-        }else{
+        if (!msg.equals("")) {
+          sendMessage(firebaseUser.getUid(), uId, msg);
+        } else {
           Toast.makeText(MessageActivity.this, "You can't send empty text", Toast.LENGTH_SHORT)
               .show();
         }
@@ -85,6 +102,7 @@ public class MessageActivity extends AppCompatActivity {
         } else {
           Glide.with(MessageActivity.this).load(user.getImageUrl()).into(profileImageView);
         }
+        readMessage(firebaseUser.getUid(), user.getId(), user.getImageUrl());
       }
 
       @Override
@@ -94,13 +112,41 @@ public class MessageActivity extends AppCompatActivity {
     });
 
   }
-  private void sendMessage(String sender, String receiver, String message){
+
+  private void sendMessage(String sender, String receiver, String message) {
     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
     HashMap<String, Object> hashMap = new HashMap<>();
-    hashMap.put("sender",sender);
-    hashMap.put("receiver",receiver);
-    hashMap.put("message",message);
+    hashMap.put("sender", sender);
+    hashMap.put("receiver", receiver);
+    hashMap.put("message", message);
     reference.child("Chats").push().setValue(hashMap);
 
   }
+
+  private void readMessage(final String myid, final String userid, final String imageUrl) {
+    chats = new ArrayList<>();
+    reference = FirebaseDatabase.getInstance().getReference("Chats");
+    reference.addValueEventListener(new ValueEventListener() {
+      @Override
+      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        chats.clear();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+          Chat chat = snapshot.getValue(Chat.class);
+          if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid)
+              || chat.getReceiver().equals(userid) && chat.getSender().equals(myid)) {
+            chats.add(chat);
+          }
+          messageAdapter = new MessageAdapter(MessageActivity.this, chats, imageUrl);
+          recyclerView.setAdapter(messageAdapter);
+        }
+      }
+
+      @Override
+      public void onCancelled(@NonNull DatabaseError databaseError) {
+
+      }
+    });
+
+  }
+
 }
