@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         if (user.getImageUrl().equals("default")) {
           profile_image.setImageResource(R.mipmap.ic_launcher);
         } else {
-          Glide.with(MainActivity.this)
+          Glide.with(getApplicationContext())
               .load(user.getImageUrl()).into(profile_image);
         }
       }

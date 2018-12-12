@@ -18,5 +18,11 @@
     android:layout_marginLeft="5dp"
     android:padding="8dp"
     android:background="@drawable/background_left"/>
-
+  <ImageView
+    android:id="@+id/img_seen"
+    android:layout_width="12dp"
+    android:layout_height="12dp"
+    android:visibility="gone"
+    android:layout_below="@+id/show_message"
+    android:src="@drawable/single_tick"/>
 </RelativeLayout>

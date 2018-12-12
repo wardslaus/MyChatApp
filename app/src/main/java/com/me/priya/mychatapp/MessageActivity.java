@@ -44,6 +44,8 @@ public class MessageActivity extends AppCompatActivity {
   MessageAdapter messageAdapter;
   List<Chat> chats;
   RecyclerView recyclerView;
+  ValueEventListener seenListener;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public class MessageActivity extends AppCompatActivity {
     toolbar.setNavigationOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        startActivity(new Intent(MessageActivity.this,MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        startActivity(new Intent(MessageActivity.this, MainActivity.class));
       }
     });
 
@@ -100,7 +102,7 @@ public class MessageActivity extends AppCompatActivity {
         if (user.getImageUrl().equals("default")) {
           profileImageView.setImageResource(R.mipmap.ic_launcher);
         } else {
-          Glide.with(MessageActivity.this).load(user.getImageUrl()).into(profileImageView);
+          Glide.with(getApplicationContext()).load(user.getImageUrl()).into(profileImageView);
         }
         readMessage(firebaseUser.getUid(), user.getId(), user.getImageUrl());
       }
@@ -110,7 +112,30 @@ public class MessageActivity extends AppCompatActivity {
 
       }
     });
+    seenMessage(uId);
+  }
 
+  private void seenMessage(final String userid) {
+    reference = FirebaseDatabase.getInstance().getReference("Chats");
+    seenListener = reference.addValueEventListener(new ValueEventListener() {
+      @Override
+      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+          Chat chat = snapshot.getValue(Chat.class);
+          if (chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid)) {
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("isseen", true);
+            snapshot.getRef().updateChildren(hashMap);
+          }
+        }
+      }
+
+      @Override
+      public void onCancelled(@NonNull DatabaseError databaseError) {
+
+      }
+    });
   }
 
   private void sendMessage(String sender, String receiver, String message) {
@@ -119,6 +144,7 @@ public class MessageActivity extends AppCompatActivity {
     hashMap.put("sender", sender);
     hashMap.put("receiver", receiver);
     hashMap.put("message", message);
+    hashMap.put("isseen", false);
     reference.child("Chats").push().setValue(hashMap);
 
   }
@@ -148,10 +174,11 @@ public class MessageActivity extends AppCompatActivity {
     });
 
   }
-  private void status(String status){
+
+  private void status(String status) {
     reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-    HashMap<String,Object> hashMap = new HashMap<>();
-    hashMap.put("status",status);
+    HashMap<String, Object> hashMap = new HashMap<>();
+    hashMap.put("status", status);
     reference.updateChildren(hashMap);
   }
 
@@ -164,6 +191,7 @@ public class MessageActivity extends AppCompatActivity {
   @Override
   protected void onPause() {
     super.onPause();
+    reference.removeEventListener(seenListener);
     status("offline");
   }
 
