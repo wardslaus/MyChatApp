@@ -62,7 +62,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
     } else {
       Glide.with(context).load(image_url).into(myViewHolder.profile_image);
     }
-
   }
 
   @Override

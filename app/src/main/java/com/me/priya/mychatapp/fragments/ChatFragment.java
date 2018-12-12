@@ -24,20 +24,17 @@ import com.me.priya.mychatapp.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ChatFragment extends Fragment {
 
-
   private RecyclerView recyclerView;
   private UserAdapter userAdapter;
-  private List<User> userList;
+  private List<User> mUsers;
   FirebaseUser firebaseUser;
   DatabaseReference reference;
-  private List<String> userStringList;
-
+  private List<String> usersList;
 
   public ChatFragment() {
     // Required empty public constructor
@@ -55,20 +52,21 @@ public class ChatFragment extends Fragment {
 
     firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-    userStringList = new ArrayList<>();
+    usersList = new ArrayList<>();
     reference = FirebaseDatabase.getInstance().getReference("Chats");
     reference.addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        userStringList.clear();
+        usersList.clear();
         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
           Chat chat = snapshot.getValue(Chat.class);
           if (chat.getSender().equals(firebaseUser.getUid())) {
-            userStringList.add(chat.getReceiver());
+            usersList.add(chat.getReceiver());
           }
-          if (chat.getReceiver().equals(firebaseUser.getUid())) {
-            userStringList.add(chat.getSender());
-          }
+          //TODO: Some changes needed.
+//           if (chat.getReceiver().equals(firebaseUser.getUid())) {
+//            usersList.add(chat.getSender());
+//          }
         }
         readChats();
       }
@@ -82,31 +80,33 @@ public class ChatFragment extends Fragment {
   }
 
   private void readChats() {
-    userList = new ArrayList<>();
-
+    mUsers = new ArrayList<>();
     reference = FirebaseDatabase.getInstance().getReference("Users");
     reference.addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        userList.clear();
+        mUsers.clear();
         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
           User user = snapshot.getValue(User.class);
           //display user with we chat in chat window
-          for (String id : userStringList) {
+          for (String id : usersList) {
             if (user.getId().equals(id)) {
-              if (userList.size() != 0) {
-                for (User user1 : userList) {
+              if (mUsers.size() != 0) {
+                for (User user1 : mUsers) {
                   if (!user.getId().equals(user1.getId())) {
-                    userList.add(user);
+                    Log.i("TAG :", "onDataChange: IF "+ user.getUsername());
+                    mUsers.add(user);
                   }
                 }
               } else {
-                userList.add(user);
+                mUsers.add(user);
+                Log.i("TAG :", "onDataChange: ELSE");
+
               }
             }
           }
         }
-        userAdapter = new UserAdapter(getContext(), userList);
+        userAdapter = new UserAdapter(getContext(), mUsers,true);
         recyclerView.setAdapter(userAdapter);
       }
 

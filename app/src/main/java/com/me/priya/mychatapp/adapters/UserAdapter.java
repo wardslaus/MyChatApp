@@ -2,12 +2,14 @@ package com.me.priya.mychatapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.provider.ContactsContract.CommonDataKinds.Im;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.me.priya.mychatapp.MessageActivity;
@@ -24,10 +26,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
   Context context;
   List<User> userList;
+  private boolean isChat;
 
-  public UserAdapter(Context context, List<User> userList) {
+  public UserAdapter(Context context, List<User> userList, Boolean isChat) {
     this.context = context;
     this.userList = userList;
+    this.isChat = isChat;
   }
 
   @NonNull
@@ -46,10 +50,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
     } else {
       Glide.with(context).load(user.getImageUrl()).into(myViewHolder.profile_image);
     }
+    if (isChat) {
+      if (user.getStatus().equals("online")) {
+        myViewHolder.status_on.setVisibility(View.VISIBLE);
+        myViewHolder.status_off.setVisibility(View.GONE);
+      } else {
+        myViewHolder.status_on.setVisibility(View.GONE);
+        myViewHolder.status_off.setVisibility(View.VISIBLE);
+      }
+    }else{
+      myViewHolder.status_on.setVisibility(View.GONE);
+      myViewHolder.status_off.setVisibility(View.GONE);
+
+    }
     myViewHolder.itemView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent intent = new Intent(context,MessageActivity.class);
+        Intent intent = new Intent(context, MessageActivity.class);
         intent.putExtra("USER_ID", user.getId());
         context.startActivity(intent);
       }
@@ -63,13 +80,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
   public class MyViewHolder extends RecyclerView.ViewHolder {
 
-    TextView txt_user_name;
-    CircleImageView profile_image;
+    private TextView txt_user_name;
+    private CircleImageView profile_image;
+    private ImageView status_on;
+    private ImageView status_off;
 
     public MyViewHolder(@NonNull View itemView) {
       super(itemView);
       txt_user_name = itemView.findViewById(R.id.user_name);
       profile_image = itemView.findViewById(R.id.profile_image);
+      status_on = itemView.findViewById(R.id.status_on);
+      status_off = itemView.findViewById(R.id.status_off);
     }
   }
 }

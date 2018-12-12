@@ -24,10 +24,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.me.priya.mychatapp.fragments.ChatFragment;
+import com.me.priya.mychatapp.fragments.ProfileFragment;
 import com.me.priya.mychatapp.fragments.UsersFragment;
 import com.me.priya.mychatapp.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
     ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
     viewPagerAdapter.addFragment(new ChatFragment(),"Chat");
     viewPagerAdapter.addFragment(new UsersFragment(),"Users");
+    viewPagerAdapter.addFragment(new ProfileFragment(),"Profile");
     viewPager.setAdapter(viewPagerAdapter);
     tabLayout.setupWithViewPager(viewPager);
   }
-
 
   @Override
   protected void onStart() {
@@ -101,8 +103,9 @@ public class MainActivity extends AppCompatActivity {
     switch (item.getItemId()) {
       case R.id.action_logout:
         FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(MainActivity.this, StartActivity.class));
-        finish();
+        startActivity(new Intent(MainActivity.this, StartActivity.class).
+        setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
         return true;
     }
     return false;
@@ -139,5 +142,23 @@ public class MainActivity extends AppCompatActivity {
     public CharSequence getPageTitle(int position) {
       return titles.get(position);
     }
+  }
+  private void status(String status){
+    reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+    HashMap<String,Object> hashMap = new HashMap<>();
+    hashMap.put("status",status);
+    reference.updateChildren(hashMap);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    status("online");
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    status("offline");
   }
 }

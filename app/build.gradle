@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.5'
     //provide Google Analytics for basic firebase functionality
     implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-storage:16.0.5'
     //material design edit text
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
     //circle image view
