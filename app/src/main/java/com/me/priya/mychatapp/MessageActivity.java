@@ -45,6 +45,7 @@ public class MessageActivity extends AppCompatActivity {
   List<Chat> chats;
   RecyclerView recyclerView;
   ValueEventListener seenListener;
+  String uId;
 
 
   @Override
@@ -76,7 +77,7 @@ public class MessageActivity extends AppCompatActivity {
     send_btn = findViewById(R.id.btn_send);
 
     intent = getIntent();
-    final String uId = intent.getStringExtra("USER_ID");
+    uId = intent.getStringExtra("USER_ID");
     firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     send_btn.setOnClickListener(new OnClickListener() {
@@ -146,6 +147,25 @@ public class MessageActivity extends AppCompatActivity {
     hashMap.put("message", message);
     hashMap.put("isseen", false);
     reference.child("Chats").push().setValue(hashMap);
+
+    //add user to chat fragment
+    final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+        .child(firebaseUser.getUid())
+        .child(uId);
+    chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+      @Override
+      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        if(!dataSnapshot.exists()){
+          chatRef.child("id").setValue(uId);
+        }
+      }
+
+      @Override
+      public void onCancelled(@NonNull DatabaseError databaseError) {
+
+      }
+    });
+
 
   }
 
