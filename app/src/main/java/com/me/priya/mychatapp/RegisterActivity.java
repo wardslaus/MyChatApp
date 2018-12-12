@@ -36,6 +36,8 @@ public class RegisterActivity extends AppCompatActivity {
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
     getSupportActionBar().setTitle("Register");
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     username = findViewById(R.id.username);
     email = findViewById(R.id.email);
     password = findViewById(R.id.password);

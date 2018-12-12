@@ -31,6 +31,9 @@
     </activity>
     <activity android:name=".MessageActivity">
     </activity>
+    <activity android:name=".ForgotPasswordActivity"
+      android:parentActivityName=".StartActivity">
+    </activity>
   </application>
 
 </manifest>
