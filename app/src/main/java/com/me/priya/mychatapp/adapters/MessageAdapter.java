@@ -70,7 +70,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
         myViewHolder.img_seen.setImageResource(R.drawable.single_tick);
       }
     }else{
-      myViewHolder.img_seen.setVisibility(View.VISIBLE);
+      myViewHolder.img_seen.setVisibility(View.GONE);
     }
   }
 

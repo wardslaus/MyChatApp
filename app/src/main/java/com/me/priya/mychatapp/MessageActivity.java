@@ -1,6 +1,7 @@
 package com.me.priya.mychatapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -264,7 +265,12 @@ public class MessageActivity extends AppCompatActivity {
 
       }
     });
+  }
 
+  private void currentUser(String uid){
+    SharedPreferences.Editor editor =getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+    editor.putString("currentuser", uid);
+    editor.apply();
   }
 
   private void status(String status) {
@@ -278,6 +284,7 @@ public class MessageActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
     status("online");
+    currentUser(uId);
   }
 
   @Override
@@ -285,6 +292,7 @@ public class MessageActivity extends AppCompatActivity {
     super.onPause();
     reference.removeEventListener(seenListener);
     status("offline");
+    currentUser("none");
   }
 
 }
